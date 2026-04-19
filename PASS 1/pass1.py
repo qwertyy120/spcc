@@ -1,21 +1,15 @@
-# PASS-1 OF TWO PASS MACRO PROCESSOR
-# Reads Source Code from input.txt
+MNT = []
+MDT = []
+ALA = []
 
-# ---------------- DATA STRUCTURES ----------------
-MNT = []        # Macro Name Table -> (Index, Macro Name, MDT Index)
-MDT = []        # Macro Definition Table
-ALA = []        # Argument List Array
-
-MNTC = 1        # MNT Counter
-MDTC = 1        # MDT Counter
+MNTC = 1
+MDTC = 1
 
 
-# ---------------- DISPLAY FUNCTION ----------------
 def print_line():
     print("-" * 50)
 
 
-# ---------------- PASS-1 FUNCTION ----------------
 def pass1(source_code):
     global MNTC, MDTC
 
@@ -26,21 +20,16 @@ def pass1(source_code):
 
         line = source_code[i].strip()
 
-        # Ignore blank lines
         if line == "":
             i += 1
             continue
 
-        # Check MACRO
         if line == "MACRO":
 
             i += 1
             header = source_code[i].strip()
 
             parts = header.split()
-
-            # Header Example:
-            # &LAB INCR &ARG1,&ARG2,&ARG3
 
             if len(parts) == 3:
                 label = parts[0]
@@ -57,11 +46,9 @@ def pass1(source_code):
                 macro_name = parts[0]
                 arguments = ""
 
-            # Enter into MNT
             MNT.append((MNTC, macro_name, MDTC))
             MNTC += 1
 
-            # Build ALA
             ALA.clear()
 
             if label != "":
@@ -73,18 +60,15 @@ def pass1(source_code):
                 for arg in args:
                     ALA.append(arg.strip())
 
-            # Store Header in MDT
             MDT.append((MDTC, header))
             MDTC += 1
 
             i += 1
 
-            # Read Macro Body
             while source_code[i].strip() != "MEND":
 
                 body = source_code[i].strip()
 
-                # Replace Arguments by Positional Notation
                 for index, arg in enumerate(ALA):
                     body = body.replace(arg, f"#{index+1}")
 
@@ -93,7 +77,6 @@ def pass1(source_code):
 
                 i += 1
 
-            # Store MEND
             MDT.append((MDTC, "MEND"))
             MDTC += 1
 
@@ -105,53 +88,41 @@ def pass1(source_code):
     return intermediate_code
 
 
-# ---------------- MAIN PROGRAM ----------------
-
-# Read Source Code from input.txt
 with open("input.txt", "r") as file:
     source_code = file.readlines()
 
-# Run Pass-1
 intermediate = pass1(source_code)
-
-# ---------------- OUTPUT ----------------
 
 print("\n===== PASS-1 OF TWO PASS MACRO PROCESSOR =====")
 
-# Source Code
 print("\nSOURCE PROGRAM:")
 print_line()
 for line in source_code:
     print(line.strip())
 
-# Intermediate Code
 print("\nINTERMEDIATE CODE:")
 print_line()
 for line in intermediate:
     print(line)
 
-# MNT
 print("\nMNT (MACRO NAME TABLE):")
 print_line()
 print("Index\tMacro Name\tMDT Index")
 for row in MNT:
     print(row[0], "\t", row[1], "\t\t", row[2])
 
-# MDT
 print("\nMDT (MACRO DEFINITION TABLE):")
 print_line()
 print("Index\tCard")
 for row in MDT:
     print(row[0], "\t", row[1])
 
-# ALA
 print("\nALA (ARGUMENT LIST ARRAY):")
 print_line()
 print("Index\tArgument")
 for i, arg in enumerate(ALA, start=1):
     print(i, "\t", arg)
 
-# Counters
 print("\nCOUNTERS:")
 print_line()
 print("MNTC =", MNTC - 1)
