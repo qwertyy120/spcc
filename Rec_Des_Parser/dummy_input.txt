@@ -1,0 +1,11 @@
+read
+
+
+
+road
+
+
+
+any 4 alphabets word.
+
+3 and 5 alphabets will also work but prefer 4 alphabets word.
